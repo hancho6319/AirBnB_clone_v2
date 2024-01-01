@@ -37,7 +37,7 @@ def python_is_cool(text='is cool'):
     return 'Python ' + text.replace('_', ' ')
 
 
-@app.route('/number/<n:int>')
+@app.route('/number/<int:n>')
 def is_it_a_number(n=None):
     """Return string when route queried
     """
