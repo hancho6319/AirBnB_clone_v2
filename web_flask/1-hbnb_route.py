@@ -13,6 +13,7 @@ def hello_flask():
     """
     return 'Hello HBNB!'
 
+
 @app.route('/hbnb')
 def hbnb():
     """Return string when route queried
