@@ -28,12 +28,12 @@ def c_is_fun(text):
     """
     return 'C ' + text.replace('_', ' ')
 
-@app.route('/python')
+
 @app.route('/python/<text>')
-def python_is_cool(text=“is cool”):
+def python_is_cool(text='is cool'):
     """Return reformatted with the replaced
     """
-    return “Python ” + text.replace('_', ' ')
+    return 'Python ' + text.replace('_', ' ')
 
 if __name__ == '__main__':
     app.url_map.strict_slashes = False
