@@ -16,7 +16,7 @@ def hello_flask():
 def hello_falsk():
     """Return string when route queried
     """
-    return 'Hello HBNB'
+    return 'HBNB'
 
 if __name__ == '__main__':
     app.url_map.strict_slashes = False
