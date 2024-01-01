@@ -21,6 +21,7 @@ def hbnb():
     """
     return 'HBNB'
 
+
 @app.route('/c/<text>')
 def c_is_fun(text):
     """Return reformatted with the replace
