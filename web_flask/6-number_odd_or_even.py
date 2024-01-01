@@ -57,7 +57,8 @@ def odd_or_even(n):
     """
 
     msg = "even" if n%2 == 0 else "odd"
-    return render_template('6-number_odd_or_even.html', value=n, string=msg)
+    return render_template('6-number_odd_or_even.html',
+            value=n, string=msg)
 
 if __name__ == '__main__':
     app.url_map.strict_slashes = False
