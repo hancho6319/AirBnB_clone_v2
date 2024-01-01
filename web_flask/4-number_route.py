@@ -37,12 +37,11 @@ def python_is_cool(text='is cool'):
     return 'Python ' + text.replace('_', ' ')
 
 
-@app.route('/number/')
-@app.route('/number/<n>')
-def is_it_a_number(n:int):
+@app.route('/number/<n:int>')
+def is_it_a_number(n=None):
     """Return string when route queried
     """
-    return 'n is a number'
+    return str(n) + ' is a number'
 
 if __name__ == '__main__':
     app.url_map.strict_slashes = False
