@@ -4,7 +4,7 @@
 """
 
 
-from flask import Flask
+from flask import Flask, render_template
 app = Flask(__name__)
 
 
@@ -27,6 +27,28 @@ def c_is_fun(text):
     """Return reformatted with the replace
     """
     return 'C ' + text.replace('_', ' ')
+
+
+@app.route('/python/')
+@app.route('/python/<text>')
+def python_is_cool(text='is cool'):
+    """Return reformatted with the replaced
+    """
+    return 'Python ' + text.replace('_', ' ')
+
+
+@app.route('/number/<int:n>')
+def is_it_a_number(n=None):
+    """Return string when route queried
+    """
+    return str(n) + ' is a number'
+
+
+@app.route('/number_template/<int:n>')
+def number_template(n):
+    """Return an HTML page
+    """
+    return render_template('5-number.html', value=n)
 
 if __name__ == '__main__':
     app.url_map.strict_slashes = False
