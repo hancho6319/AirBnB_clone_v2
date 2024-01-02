@@ -66,3 +66,8 @@ class FileStorage:
                         obj_class = my_classes[class_name]
                         obj = obj_class(**v)
                         self.new(obj)
+    def close(self):
+        """
+        Calls reload() method for deserializing the JSON file to objects
+        """
+        self.reload()
