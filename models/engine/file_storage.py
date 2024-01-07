@@ -1,73 +1,63 @@
-#!/usr/bin/env python3
-
-"""
-This module defines a class named FileStorage
-"""
-
-
-from json import dumps, loads
-import os
-from models.my_classes import my_classes
+#!/usr/bin/python3
+"""This module defines a class to manage file storage for hbnb clone"""
+import json
 
 
 class FileStorage:
-    """
-    Serializes instances to a JSON file and deserializes JSON file to inst.
-    """
-
+    """This class manages storage of hbnb models in JSON format"""
     __file_path = 'file.json'
     __objects = {}
 
-    @staticmethod
-    def to_json_string(objs_dic):
-        """Convert objects dictionary to a JSON string."""
-
-        if objs_dic is None or len(objs_dic) == 0:
-            return "{}"
-
-        my_dict = {}
-        for obj_id, obj in objs_dic.items():
-            if hasattr(obj, 'to_dict'):
-                my_dict[obj_id] = obj.to_dict()
-            elif isinstance(obj, dict):
-                my_dict[obj_id] = obj
-
-        return dumps(my_dict)
-
-    def all(self):
-        """ Returns the dictionary __objects. """
-
-        return FileStorage.__objects
+    def all(self, cls=None):
+        """Returns a dictionary or list of objects"""
+        if cls:
+            return {
+                k: v for k, v in self.__objects.items() if isinstance(v, cls)}
+        return self.__objects
 
     def new(self, obj):
-        """ Sets in __objects the obj with key <obj class name>.id """
-
-        key = "{}.{}".format(type(obj).__name__, obj.id)
-        FileStorage.__objects[key] = obj
+        """Adds new object to storage dictionary"""
+        self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
 
     def save(self):
-        """ Serializes __objects to the JSON file. """
-
-        with open(FileStorage.__file_path, "w", encoding="utf-8") as a_file:
-            serialized_objs = FileStorage.to_json_string(FileStorage.__objects)
-            a_file.write(serialized_objs)
+        """Saves storage dictionary to file"""
+        with open(FileStorage.__file_path, 'w') as f:
+            temp = {}
+            temp.update(FileStorage.__objects)
+            for key, val in temp.items():
+                temp[key] = val.to_dict()
+            json.dump(temp, f)
 
     def reload(self):
-        """ Deserializes the JSON file to __objects. """
+        """Loads storage dictionary from file"""
+        from models.base_model import BaseModel
+        from models.user import User
+        from models.place import Place
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.review import Review
 
-        if os.path.exists(FileStorage.__file_path):
-            with open(
-                    FileStorage.__file_path, "r", encoding="utf-8") as a_file:
-                deserialized_objs = loads(a_file.read())
+        classes = {
+                    'BaseModel': BaseModel, 'User': User, 'Place': Place,
+                    'State': State, 'City': City, 'Amenity': Amenity,
+                    'Review': Review
+                  }
+        try:
+            temp = {}
+            with open(FileStorage.__file_path, 'r') as f:
+                temp = json.load(f)
+                for key, val in temp.items():
+                    self.all()[key] = classes[val['__class__']](**val)
+        except FileNotFoundError:
+            pass
 
-                for k, v in deserialized_objs.items():
-                    class_name, obj_id = k.split(".")
-                    if class_name in my_classes:
-                        obj_class = my_classes[class_name]
-                        obj = obj_class(**v)
-                        self.new(obj)
+    def delete(self, obj=None):
+        """Delete obj from __objects if its inside"""
+        if obj is not None:
+            key = obj.__class__.__name__ + '.' + obj.id
+            self.__objects.pop(key, None)
+
     def close(self):
-        """
-        Calls reload() method for deserializing the JSON file to objects
-        """
+        """Call reload() to deserialize the JSON file to objects"""
         self.reload()
